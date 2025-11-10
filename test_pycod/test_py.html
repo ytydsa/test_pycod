@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>简单登录页面</title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+				font-family: 'Arial', sans-serif;
+			}
+
+			body {
+				background-color: #f5f7fa;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				min-height: 100vh;
+				padding: 20px;
+			}
+
+			.login-container {
+				background-color: white;
+				padding: 40px 30px;
+				border-radius: 8px;
+				box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+				width: 100%;
+				max-width: 400px;
+			}
+
+			.login-title {
+				text-align: center;
+				margin-bottom: 30px;
+				color: #333;
+				font-size: 24px;
+				font-weight: 600;
+			}
+
+			.form-group {
+				margin-bottom: 20px;
+			}
+
+			.form-group label {
+				display: block;
+				margin-bottom: 8px;
+				color: #666;
+				font-size: 14px;
+			}
+
+			.form-control {
+				width: 100%;
+				padding: 12px 15px;
+				border: 1px solid #ddd;
+				border-radius: 4px;
+				font-size: 16px;
+				transition: border-color 0.3s;
+			}
+
+			.form-control:focus {
+				outline: none;
+				border-color: #409eff;
+				box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.1);
+			}
+
+			.btn-login {
+				width: 100%;
+				padding: 12px;
+				background-color: #409eff;
+				color: white;
+				border: none;
+				border-radius: 4px;
+				font-size: 16px;
+				font-weight: 500;
+				cursor: pointer;
+				transition: background-color 0.3s;
+			}
+
+			.btn-login:hover {
+				background-color: #3086d6;
+			}
+
+			.error-message {
+				color: #f56c6c;
+				font-size: 13px;
+				margin-top: 5px;
+				display: none;
+			}
+
+			.success-message {
+				color: #67c23a;
+				font-size: 14px;
+				text-align: center;
+				margin-top: 15px;
+				display: none;
+			}
+
+			@media (max-width: 375px) {
+				.login-container {
+					padding: 30px 20px;
+				}
+
+				.login-title {
+					font-size: 22px;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="login-container">
+			<h2 class="login-title">用户登录</h2>
+			<form id="loginForm">
+				<div class="form-group">
+					<label for="username">用户名</label>
+					<input type="text" id="username" class="form-control" placeholder="请输入用户名">
+					<div class="error-message" id="usernameError">用户名不能为空</div>
+				</div>
+				<div class="form-group">
+					<label for="password">密码</label>
+					<input type="password" id="password" class="form-control" placeholder="请输入密码">
+					<div class="error-message" id="passwordError">密码不能为空</div>
+				</div>
+				<button type="submit" class="btn-login">登录</button>
+				<div class="success-message" id="successMessage">登录成功！正在跳转...</div>
+			</form>
+		</div>
+
+		<script>
+			// 前端存储的合法用户信息（实际项目中应存储在后端）
+			const validUsers = [{
+					username: 'admin',
+					password: '123456'
+				},
+				{
+					username: 'user1',
+					password: '654321'
+				},
+				{
+					username: 'test',
+					password: 'test123'
+				}
+			];
+
+			// 获取DOM元素
+			const loginForm = document.getElementById('loginForm');
+			const usernameInput = document.getElementById('username');
+			const passwordInput = document.getElementById('password');
+			const usernameError = document.getElementById('usernameError');
+			const passwordError = document.getElementById('passwordError');
+			const successMessage = document.getElementById('successMessage');
+
+			// 表单提交事件监听
+			loginForm.addEventListener('submit', function(e) {
+				e.preventDefault(); // 阻止表单默认提交行为
+				let isFormValid = true;
+
+				// 重置错误提示和成功提示
+				usernameError.style.display = 'none';
+				passwordError.style.display = 'none';
+				successMessage.style.display = 'none';
+
+				// 获取输入值（去除首尾空格）
+				const username = usernameInput.value.trim();
+				const password = passwordInput.value.trim();
+
+				// 验证用户名
+				if (!username) {
+					usernameError.style.display = 'block';
+					isFormValid = false;
+				}
+
+				// 验证密码
+				if (!password) {
+					passwordError.style.display = 'block';
+					isFormValid = false;
+				}
+
+				// 表单验证通过，验证用户信息
+				if (isFormValid) {
+					const isUserValid = validUsers.some(user =>
+						user.username === username && user.password === password
+					);
+
+					if (isUserValid) {
+						// 登录成功
+						successMessage.style.display = 'block';
+						// 模拟跳转（实际项目中可跳转到首页）
+						setTimeout(() => {
+							alert(`欢迎您，${username}！`);
+							// 方式1：跳转到本地页面（推荐，需提前创建index.html）
+							// 延迟1.5秒跳转，让用户看到"登录成功"提示
+							setTimeout(() => {
+								window.location.href = 'idex.html'; // 跳转到首页（本地文件）
+							}, 1500);
+
+							// 方式2：跳转到外部链接（如百度，可直接替换使用）
+							// setTimeout(() => {
+							//     window.location.href = 'https://www.baidu.com';
+							// }, 1500);
+
+							// 方式3：替换当前页面（无法返回登录页）
+							// setTimeout(() => {
+							//     window.location.replace('index.html');
+							// }, 1500);
+						}, 1500);
+					} else {
+						// 用户名或密码错误
+						usernameError.textContent = '用户名或密码错误';
+						usernameError.style.display = 'block';
+					}
+				}
+			});
+
+			// 输入框聚焦时清除错误提示
+			usernameInput.addEventListener('focus', function() {
+				usernameError.style.display = 'none';
+			});
+
+			passwordInput.addEventListener('focus', function() {
+				passwordError.style.display = 'none';
+			});
+		</script>
+	</body>
+</html>
